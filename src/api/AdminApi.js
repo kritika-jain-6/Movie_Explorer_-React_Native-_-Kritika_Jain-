@@ -1,0 +1,67 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+const baseURL = 'https://movie-explorer-ror-aalekh-2ewg.onrender.com';
+
+export const getMovies = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/api/v1/movies?page=1&per_page=20`);
+      return response.data;
+    } catch (error) {
+      console.log('Error fetching user:', error.response);
+      throw error;
+    }
+  };
+
+export const addMovie = async (movie) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.post(
+      `${baseURL}/api/v1/movies`,
+      movie,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('Error adding movie:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const updateMovie = async (movie) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.patch(
+      `${baseURL}/api/v1/movies/${movie.id}`,
+      { movie },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('Error updating movie:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const deleteMovie = async (id) => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    const response = await axios.delete(`${baseURL}/api/v1/movies/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error deleting movie:', error.response?.data || error.message);
+    throw error;
+  }
+};

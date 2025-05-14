@@ -1,0 +1,229 @@
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+import { getMovieDetails } from '../api/MovieAPI';
+import { Toast } from 'toastify-react-native';
+const { width } = Dimensions.get('window');
+
+const streamingServices = [
+  {
+    id: '1',
+    name: 'Amazon',
+    imageUrl:
+      'https://yt3.googleusercontent.com/BE8oLlRJ4gzMqNyS5c0OnkuVsGH3tCWN6Zo5XjkR-BiPZObABCuQ-NDq-8sroOEMtX4kPv-9rg=s900-c-k-c0x00ffffff-no-rj',
+  },
+  {
+    id: '2',
+    name: 'Netflix',
+    imageUrl:
+      'https://images.ctfassets.net/y2ske730sjqp/5QQ9SVIdc1tmkqrtFnG9U1/de758bba0f65dcc1c6bc1f31f161003d/BrandAssets_Logos_02-NSymbol.jpg?w=940',
+  },
+  {
+    id: '3',
+    name: 'HBO',
+    imageUrl:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmPmYVyCxBcDrsDxutlkSxHZYA2auvv81jiA&s',
+  },
+  {
+    id: '4',
+    name: 'Hulu',
+    imageUrl:
+      'data:image/jpeg;base64,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',
+  },
+];
+
+type StreamingService = {
+  id: string;
+  name: string;
+  imageUrl: string;
+};
+
+type Movie = {
+  id: string;
+  title: string;
+  streaming_platform: string;
+  poster_url: string;
+};
+
+type RootStackParamList = {
+  SearchResults: { movie: Movie };
+};
+
+const StreamingServiceItem = ({
+  service,
+  selectedId,
+  onSelect,
+}: {
+  service: StreamingService;
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) => {
+  const isSelected = selectedId === service.id;
+
+  return (
+    <TouchableOpacity onPress={() => onSelect(service.id)}>
+      <View
+        style={[
+          styles.streamingItem,
+          isSelected && styles.streamingItemSelected,
+        ]}
+      >
+        <Image
+          source={{ uri: service.imageUrl }}
+          style={styles.streamingImage}
+          resizeMode="cover"
+        />
+        <Text
+          style={[styles.serviceName, isSelected && styles.serviceNameSelected]}
+        >
+          {service.name}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const Explore = () => {
+  const [selectedPlatform, setSelectedPlatform] = useState('1');
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const movieData = await getMovieDetails();
+        setMovies(movieData.movies);
+      } catch (err: any) {
+        Toast.error('Error fetching movies');
+      }
+    };
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    if (selectedPlatform) {
+      const platformName = streamingServices.find(
+        service => service.id === selectedPlatform
+      )?.name;
+      const filtered = movies.filter(
+        movie => movie.streaming_platform === platformName
+      );
+      setFilteredMovies(filtered);
+    } else {
+      setFilteredMovies(movies);
+    }
+  }, [selectedPlatform, movies]);
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={streamingServices}
+        renderItem={({ item }) => (
+          <StreamingServiceItem
+            service={item}
+            selectedId={selectedPlatform}
+            onSelect={setSelectedPlatform}
+          />
+        )}
+        keyExtractor={item => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.streamingList}
+      />
+
+      <FlatList
+        data={filteredMovies}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SearchResults', { movie: item })}
+          >
+            <View style={styles.movieItem}>
+              <Image
+                source={{ uri: item.poster_url }}
+                style={styles.moviePoster}
+                resizeMode="cover"
+              />
+              <Text style={styles.movieTitle}>{item.title}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        contentContainerStyle={styles.movieList}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  streamingList: {
+    paddingVertical: 10,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  streamingItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 20,
+    marginLeft: 20,
+  },
+  streamingItemSelected: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFD700',
+    paddingBottom: 4,
+  },
+  streamingImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  serviceName: {
+    color: '#ccc',
+    fontSize: 19,
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  serviceNameSelected: {
+    color: '#FFD700',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  movieList: {
+    paddingHorizontal: 10,
+  },
+  movieItem: {
+    flex: 1,
+    margin: 10,
+    alignItems: 'flex-start',
+  },
+  moviePoster: {
+    width: width * 0.4,
+    height: width * 0.6,
+    borderRadius: 8,
+  },
+  movieTitle: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 6,
+    textAlign: 'center',
+  },
+});
+
+export default Explore;
