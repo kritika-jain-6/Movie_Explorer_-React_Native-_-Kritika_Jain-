@@ -37,7 +37,7 @@ const ProfileScreen = () => {
         });
 
         const subData = await fetchUserSubscription();
-        console.log('subData', subData);
+        // console.log('subData', subData);
         
         setSubscriptionPlan(subData.plan_type || 'No subscription');
       } catch (error) {
