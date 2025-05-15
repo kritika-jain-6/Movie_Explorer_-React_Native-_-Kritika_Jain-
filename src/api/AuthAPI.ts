@@ -18,7 +18,7 @@ export const getUser = async () => {
     return response.data;
 
   } catch (error) {
-    console.log('Error fetching user:', error.response);
+    // console.log('Error fetching user:', error.response);
     throw error;
   }
 };
@@ -35,7 +35,7 @@ export const logoutUser = async () => {
   );
     return response.data;
   } catch (error) {
-    console.log('Error logging out user:', error.response);
+    // console.log('Error logging out user:', error.response);
     throw error;
   }
 };

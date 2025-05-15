@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-
   ActivityIndicator,
 } from 'react-native';
 import { Toast } from 'toastify-react-native';
@@ -18,12 +17,6 @@ import {
   getMovies,
 } from '../api/AdminApi';
 
-const icons = {
-  add: 'https://cdn-icons-png.flaticon.com/512/1828/1828817.png', // plus icon
-  edit: 'https://cdn-icons-png.flaticon.com/512/1828/1828911.png', // pencil
-  delete: 'https://cdn-icons-png.flaticon.com/512/1214/1214428.png', // trash
-  avatar: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', // avatar
-};
 
 const AdminHome = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -57,7 +50,7 @@ const AdminHome = () => {
 
   const handleAddMovie = async (movie: { id: string; title: string; year: string; poster: string }) => {
     try {
-      const newMovie = await addMovie(movie);
+      const newMovie = await addMovie(movie.title);
       setMovies((prev) => [newMovie, ...prev]);
       setModalVisible(false);
     } catch (error) {
@@ -81,7 +74,10 @@ const AdminHome = () => {
 
   const handleEditMovie = async (updatedMovie: { id: string; title: string; year: string; poster: string }) => {
     try {
-      const updated = await updateMovie(updatedMovie);
+      const updated = await updateMovie({
+        ...updatedMovie,
+        id: Number(updatedMovie.id),
+      });
       setMovies((prev) =>
         prev.map((m) => (m.id === updated.id ? updated : m))
       );
@@ -110,10 +106,10 @@ const AdminHome = () => {
           year: item.release_year,
           poster: item.poster_url,
         })}>
-          <Image source={{ uri: icons.edit }} style={styles.actionIcon} />
+          <Image source={require('../assets/pencil.png')} style={styles.actionIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDelete(item.id)}>
-          <Image source={{ uri: icons.delete }} style={styles.actionIcon} />
+          <Image source={require('../assets/bin.png')} style={styles.actionIcon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -124,10 +120,9 @@ const AdminHome = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Movie Admin</Text>
-        <Image source={{ uri: icons.avatar }} style={styles.avatar} />
+        <Image source={require('../assets/user.png')} style={styles.avatar} />
       </View>
 
-      {/* Add Movie Button */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => setModalVisible(true)}

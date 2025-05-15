@@ -42,8 +42,7 @@ export const MovieItem = React.memo(({ item }: { item: Movie }) => {
           style={styles.image}
           resizeMode="cover"
           accessibilityRole="image"
-          accessibilityLabel={`${item.title}`} // ✅ FIXED template literal syntax
-        />
+          accessibilityLabel={`${item.title}`}/>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.rating}>⭐ {item.rating}</Text>
         <Text style={styles.details}>

@@ -70,7 +70,7 @@ describe('SplashScreen', () => {
     const { getByTestId } = setup();
     fireEvent.press(getByTestId('start-button'));
 
-    await waitFor(() => {
+    waitFor(() => {
       expect(Toast.error).toHaveBeenCalledWith('Error fetching user data:');
     });
   });

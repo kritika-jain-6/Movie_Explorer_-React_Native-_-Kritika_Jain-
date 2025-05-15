@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,15 @@ import {
   TextInput,
   TouchableOpacity,
   ImageBackground,
-
 } from 'react-native';
 
 import withNavigation from '../navigation/withHOC';
-import { registeruser } from '../api/UserAPI';
-import { Toast } from 'toastify-react-native';
+import {registeruser} from '../api/UserAPI';
+import {Toast} from 'toastify-react-native';
+import {AuthParamList} from '../types/types';
+import {NavigationProp} from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 interface State {
   name: string;
@@ -26,8 +27,11 @@ interface State {
   secureConfirmPassword: boolean;
 }
 
-class Register extends Component<{ navigation: any }, State> {
-  constructor(props: { navigation: any }) {
+type Props = {
+  navigation: NavigationProp<AuthParamList>;
+};
+class Register extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       name: '',
@@ -41,7 +45,7 @@ class Register extends Component<{ navigation: any }, State> {
   }
 
   handleRegister = async () => {
-    const { name, mobilenumber, email, password, confirmPassword } = this.state;
+    const {name, mobilenumber, email, password, confirmPassword} = this.state;
 
     if (!name || !mobilenumber || !email || !password || !confirmPassword) {
       Toast.error('Validation Error Please enter all the fields');
@@ -71,17 +75,13 @@ class Register extends Component<{ navigation: any }, State> {
       Toast.success('Success Registration successful!');
       this.props.navigation.navigate('MainTabs');
     } catch (error) {
-
-      Toast.error(
-        'Registration Error',
-
-      );
+      Toast.error('Registration Error');
     }
   };
 
   togglePasswordVisibility = (field: 'password' | 'confirmPassword') => {
     if (field === 'password') {
-      this.setState(prevState => ({ securePassword: !prevState.securePassword }));
+      this.setState(prevState => ({securePassword: !prevState.securePassword}));
     } else {
       this.setState(prevState => ({
         secureConfirmPassword: !prevState.secureConfirmPassword,
@@ -113,7 +113,7 @@ class Register extends Component<{ navigation: any }, State> {
             placeholder="Name"
             placeholderTextColor={'white'}
             value={name}
-            onChangeText={text => this.setState({ name: text })}
+            onChangeText={text => this.setState({name: text})}
           />
 
           <TextInput
@@ -122,7 +122,7 @@ class Register extends Component<{ navigation: any }, State> {
             placeholder="Mobile Number"
             placeholderTextColor={'white'}
             value={mobilenumber}
-            onChangeText={text => this.setState({ mobilenumber: text })}
+            onChangeText={text => this.setState({mobilenumber: text})}
             keyboardType="phone-pad"
           />
 
@@ -132,7 +132,7 @@ class Register extends Component<{ navigation: any }, State> {
             placeholder="Email"
             placeholderTextColor={'white'}
             value={email}
-            onChangeText={text => this.setState({ email: text })}
+            onChangeText={text => this.setState({email: text})}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -145,7 +145,7 @@ class Register extends Component<{ navigation: any }, State> {
               placeholderTextColor={'white'}
               secureTextEntry={securePassword}
               value={password}
-              onChangeText={text => this.setState({ password: text })}
+              onChangeText={text => this.setState({password: text})}
             />
             <TouchableOpacity
               style={styles.showPasswordButton}
@@ -164,7 +164,7 @@ class Register extends Component<{ navigation: any }, State> {
               placeholderTextColor={'white'}
               secureTextEntry={secureConfirmPassword}
               value={confirmPassword}
-              onChangeText={text => this.setState({ confirmPassword: text })}
+              onChangeText={text => this.setState({confirmPassword: text})}
             />
             <TouchableOpacity
               style={styles.showPasswordButton}

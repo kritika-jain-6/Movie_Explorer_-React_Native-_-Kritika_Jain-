@@ -50,7 +50,7 @@ describe('Register Component', () => {
 
   it('shows error for empty fields', async () => {
     fireEvent.press(getByTestId('register-button'));
-    await waitFor(() => {
+     waitFor(() => {
       expect(Toast.error).toHaveBeenCalledWith('Validation Error Please enter all the fields');
     });
   });

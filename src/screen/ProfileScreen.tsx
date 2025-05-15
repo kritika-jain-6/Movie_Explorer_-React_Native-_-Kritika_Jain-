@@ -75,11 +75,7 @@ const ProfileScreen = () => {
           style={styles.avatarContainer}
           testID="add-photo-button">
           <Image
-            source={{
-              uri:
-                profile.avatar ||
-                'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-            }}
+            source={require('../assets/user.png')}
             style={styles.avatar}
           />
         </TouchableOpacity>

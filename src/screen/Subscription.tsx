@@ -11,50 +11,8 @@ import { Toast } from 'toastify-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { createSubscription } from '../api/SubscriptionApi';
+import plans from '../data/Plandata'
 
-
-const plans = [
-  {
-    id: '1_day',
-    title: '1 Day Premium',
-    price: '$1.99',
-    planType: '1_day',
-    features: [
-      'Full access to all movies',
-      'Unlimited streaming',
-      'HD quality',
-      'No ads',
-    ],
-  },
-  {
-    id: '7_days',
-    title: '7 Day Premium',
-    price: '$7.99',
-    planType: '7_days',
-    features: [
-      'Full access to all movies',
-      'Unlimited streaming',
-      'HD & 4K quality',
-      'No ads',
-      'Offline downloads',
-    ],
-  },
-  {
-    id: '1_month',
-    title: '1 Month Premium',
-    price: '$19.99',
-    planType: '1_month',
-    features: [
-      'Full access to all movies',
-      'Unlimited streaming',
-      'HD & 4K quality',
-      'No ads',
-      'Offline downloads',
-      'Priority customer support',
-      'Early access to new releases',
-    ],
-  },
-];
 
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -95,9 +53,16 @@ const Subscription = () => {
     setIsLoading(false);
   }
 };
+  interface plan {
+    id: string;
+    title: string;
+    price: string;
+    planType: string;
+    features: string[];
+  }
 
 
-  const renderPlan = (plan) => {
+  const renderPlan = (plan:plan): React.ReactElement => {
     const isSelected = selectedPlan === plan.id;
     const isHighlighted = plan.id === '7_days';
     const containerStyle = [
@@ -117,7 +82,7 @@ const Subscription = () => {
             <Text style={styles.planTitle}>{plan.title}</Text>
             <Text style={styles.planPrice}>{plan.price}</Text>
           </View>
-          {plan.features.map((feature, index) => (
+          {plan.features.map((feature: string, index: number) => (
             <Text style={styles.planFeature} key={index}>
               {feature}
             </Text>

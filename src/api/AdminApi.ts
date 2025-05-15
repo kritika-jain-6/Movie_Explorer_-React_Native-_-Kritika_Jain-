@@ -1,19 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Toast } from 'toastify-react-native';
 
 const baseURL = 'https://movie-explorer-ror-aalekh-2ewg.onrender.com';
+
 
 export const getMovies = async () => {
     try {
       const response = await axios.get(`${baseURL}/api/v1/movies?page=1&per_page=20`);
       return response.data;
     } catch (error) {
-      console.log('Error fetching user:', error.response);
+      Toast.error('Error fetching user:');
       throw error;
     }
   };
 
-export const addMovie = async (movie) => {
+export const addMovie = async (movie:string) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.post(
@@ -27,12 +29,17 @@ export const addMovie = async (movie) => {
     );
     return response.data;
   } catch (error) {
-    console.log('Error adding movie:', error.response?.data || error.message);
+    // console.log('Error adding movie:', error.response?.data || error.message);
     throw error;
   }
 };
 
-export const updateMovie = async (movie) => {
+export interface MovieUpdatePayload {
+  id: number;
+  [key: string]: any;
+}
+
+export const updateMovie = async (movie: MovieUpdatePayload) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.patch(
@@ -46,12 +53,12 @@ export const updateMovie = async (movie) => {
     );
     return response.data;
   } catch (error) {
-    console.log('Error updating movie:', error.response?.data || error.message);
+    // console.log('Error updating movie:', error.response?.data || error.message);
     throw error;
   }
 };
 
-export const deleteMovie = async (id) => {
+export const deleteMovie = async (id:string) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.delete(`${baseURL}/api/v1/movies/${id}`, {
@@ -61,7 +68,7 @@ export const deleteMovie = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.log('Error deleting movie:', error.response?.data || error.message);
+    // console.log('Error deleting movie:', error.response?.data || error.message);
     throw error;
   }
 };

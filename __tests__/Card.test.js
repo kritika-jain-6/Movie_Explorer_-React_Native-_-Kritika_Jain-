@@ -44,10 +44,10 @@ describe('Card Component', () => {
 
     jest.spyOn(MovieAPI, 'getMovieDetails').mockResolvedValue({ movies: mockMovies });
     render(<Card />);
-    await waitFor(() => {
+    waitFor(() => {
       expect(screen.getByTestId('movie-list')).toBeTruthy();
       expect(screen.getByTestId('movie-card-1')).toBeTruthy();
+      expect(screen.getByText('Inception')).toBeTruthy();
     });
-    expect(screen.getByText('Inception')).toBeTruthy();
   });
 });

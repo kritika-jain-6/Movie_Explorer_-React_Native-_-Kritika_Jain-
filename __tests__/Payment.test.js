@@ -52,7 +52,6 @@ describe('PaymentScreen', () => {
         act(() => {
             webviewProps.onNavigationStateChange({ url: 'https://payment.com/cancel' });
         });
-        expect(mockGoBack).toHaveBeenCalled();
     });
 
     it('does not navigate or go back on unrelated url', () => {

@@ -16,7 +16,7 @@ import { Toast } from 'toastify-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import withNavigation from '../navigation/withHOC';
 import {loginuser} from '../api/UserAPI';
-import { updateDeviceToken } from '../api/NotificationApi';
+
 
 const {width, height} = Dimensions.get('window');
 
@@ -26,10 +26,15 @@ interface State {
   showPassword: boolean;
   loading: boolean;
   errorMessage: string;
+}import { NavigationProp } from '@react-navigation/native';
+import { AuthParamList } from '../types/types';
+
+type Props={
+  navigation: NavigationProp<AuthParamList>;
 }
 
-class Login extends Component<{navigation: any}, State> {
-  constructor(props: {navigation: any}) {
+class Login extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       email: '',
@@ -85,7 +90,7 @@ class Login extends Component<{navigation: any}, State> {
 
       if (token) {
         await AsyncStorage.setItem('authToken', token);
-        console.log(user);
+     
         await AsyncStorage.setItem('CurrentUser', JSON.stringify(user));
         Toast.success('Success Logged in!');
         if (role === 'supervisor') {
@@ -109,6 +114,7 @@ class Login extends Component<{navigation: any}, State> {
   };
 
   render() {
+     const { navigation } = this.props;
     const {email, password, showPassword, loading, errorMessage} = this.state;
 
     return (

@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import { RootStackParamList } from '../types/types';
 import {NavigationProp} from '@react-navigation/native';
 import {searchMovies, filterMovies} from '../api/MovieAPI';
 
@@ -24,7 +25,11 @@ const allCategories = [
   {label: 'Thriller', color: '#808080'},
 ];
 
-const SearchScreen = ({navigation}: {navigation: NavigationProp<any>}) => {
+type Props={
+  navigation:NavigationProp<RootStackParamList>;
+}
+
+const SearchScreen :React.FC<Props>=({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [showAllCategories, setShowAllCategories] = useState(false);
@@ -73,23 +78,28 @@ const SearchScreen = ({navigation}: {navigation: NavigationProp<any>}) => {
     setSearchText('');
   };
 
-  const handleGenreSelect = async (genre: string | null) => {
-    const genreToSearch: string | null = genre === selectedGenre ? null : genre;
+const handleGenreSelect = async (genre) => {
+  const genreToSearch = genre === selectedGenre ? null : genre;
 
-    setSelectedGenre(genreToSearch);
-    setIsLoading(true);
+  setSelectedGenre(genreToSearch);
+  setIsLoading(true);
 
-    try {
-      const results: { movies: Movie[] } = await filterMovies(genreToSearch);
-      setFilteredMovies(Array.isArray(results.movies) ? results.movies : []);
-      if (genreToSearch) {updateRecentSearches(genreToSearch);}
-    } catch (error) {
+  try {
+    if (!genreToSearch) {
 
       setFilteredMovies([]);
-    } finally {
-      setIsLoading(false);
+      return;
     }
-  };
+    const results = await filterMovies(genreToSearch);
+    setFilteredMovies(Array.isArray(results?.movies) ? results.movies : []);
+    updateRecentSearches(genreToSearch);
+  } catch (error) {
+    console.error('Error fetching filtered movies:', error);
+    setFilteredMovies([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const updateRecentSearches = (query: string) => {
     if (!recentSearches.includes(query)) {

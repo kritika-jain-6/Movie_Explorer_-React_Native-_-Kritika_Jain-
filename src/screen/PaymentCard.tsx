@@ -4,14 +4,23 @@ import {WebView} from 'react-native-webview';
 import {useRoute, useNavigation} from '@react-navigation/native';
 
 const PaymentScreen = () => {
-  const route = useRoute<any>();
+  const route = useRoute();
   const navigation = useNavigation();
-  const {url, session_id} = route.params;
+  const { url, session_id } = route.params as PaymentScreenRouteParams;
 
-  const handleNavigationStateChange = navState => {
-    console.log(navState.url)
+  interface PaymentScreenRouteParams {
+    url: string;
+    session_id: string;
+  }
+
+  interface NavigationState {
+    url: string;
+    [key: string]: any;
+  }
+
+  const handleNavigationStateChange = (navState: NavigationState): void => {
+    console.log(navState.url);
     if (navState.url.includes('success')) {
-      console.log('hi')
       navigation.navigate('Home');
     }
   };

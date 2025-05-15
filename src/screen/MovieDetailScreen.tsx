@@ -21,38 +21,48 @@ interface Movie {
   description: string;
 }
 
-const MovieDetailScreen = ({ route }: { route: RouteProp<any> }) => {
-  const { movie } = route.params as { movie: Movie };
+interface MovieDetailScreenRouteParams {
+  movie: Movie;
+}
+
+interface MovieDetailScreenProps {
+  route: RouteProp<Record<string, MovieDetailScreenRouteParams>, string>;
+}
+
+const MovieDetailScreen: React.FC<MovieDetailScreenProps> = ({ route }) => {
+  const { movie } = route.params as MovieDetailScreenRouteParams;
   const navigation = useNavigation();
-  const [added, setAdded] = useState(false);
+  const [added, setAdded] = useState<boolean>(false);
 
-  const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
-  const inWatchlist = isInWatchlist(movie.id);
+  const { addToWatchlist, removeFromWatchlist, isInWatchlist }: {
+    addToWatchlist: (movie: Movie) => void;
+    removeFromWatchlist: (id: string) => void;
+    isInWatchlist: (id: string) => boolean;
+  } = useWatchlist();
+  const inWatchlist: boolean = isInWatchlist(movie.id);
 
-  const handleWatchlistToggle = () => {
-    setAdded(prev=>!prev);
+  const handleWatchlistToggle = (): void => {
+    setAdded(prev => !prev);
     if (inWatchlist) {
       removeFromWatchlist(movie.id);
     } else {
       addToWatchlist(movie);
     }
-    // navigation.navigate('WatchList');
   };
   return (
     <View style={styles.container}>
       <ScrollView>
-      <TouchableOpacity
-  style={styles.backButton}
-  onPress={() => navigation.goBack()}
-
->
-  <View style={styles.overlay}>
-    <Image
-      source={{ uri: 'https://cdn-icons-png.flaticon.com/512/93/93634.png' }}
-      style={styles.icon}
-    />
-  </View>
-</TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <View style={styles.overlay}>
+            <Image
+              source={require('../assets/back-arrow.png')}
+              style={styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
 
         <Image source={{ uri: movie.poster_url }} style={styles.detailPoster} />
 
@@ -65,7 +75,7 @@ const MovieDetailScreen = ({ route }: { route: RouteProp<any> }) => {
 
         <TouchableOpacity style={styles.watchlistButton} onPress={handleWatchlistToggle} testID="watchlist-button">
           <Text style={styles.watchlistText}>
-            {added ? 'Remove from Watchlist' : 'Add to Watchlist'  }
+            {added ? 'Remove from Watchlist' : 'Add to Watchlist'}
           </Text>
         </TouchableOpacity>
       </ScrollView>

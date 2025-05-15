@@ -1,32 +1,35 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Text,
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  Image,
   View,
 } from 'react-native';
 import {Toast} from 'toastify-react-native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUser} from '../api/AuthAPI';
+import { RootStackParamList } from '../types/types';
+import { NavigationProp } from '@react-navigation/native';
 
-const SplashScreen = ({navigation}: {navigation: StackNavigationProp<any>}) => {
-  const [user, setUser] = useState();
+type Props={
+  navigation: NavigationProp<RootStackParamList>;
+}
 
+const SplashScreen :React.FC<Props> =({navigation})=> {
   const handleStart = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
 
       if (token) {
-        const res = await getUser();
-        setUser(res);
+        await getUser();
         navigation.navigate('MainTabs');
       } else {
-         navigation.navigate('Login');
+        navigation.navigate('Login');
       }
     } catch (error) {
-      Toast.error('Error fetching user data:');
+      Toast.error('Error fetching user data');
     }
   };
 
@@ -36,6 +39,17 @@ const SplashScreen = ({navigation}: {navigation: StackNavigationProp<any>}) => {
       source={require('../assets/background.jpg')}
       resizeMode="cover"
       testID="splash-background">
+      <View style={styles.overlay} />
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/Logo.jpg')}
+          style={styles.logo}
+          testID="splash-logo"
+        />
+        <Text style={styles.title} testID="splash-text">
+          Welcome to BINGE
+        </Text>
+      </View>
       <View style={styles.bottomContainer} testID="bottom-container">
         <TouchableOpacity
           style={styles.button}
@@ -53,26 +67,59 @@ export default SplashScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
-  bottomContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+
+  logoContainer: {
+    flex: 10,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 50,
   },
-  button: {
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    elevation: 5,
+  logo: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    resizeMode: 'contain',
   },
-  buttonText: {
-    fontSize: 20,
+  title: {
+    marginTop: 20,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
     textShadowColor: '#000',
     textShadowOffset: {width: 1, height: 1},
-    textShadowRadius: 3,
+    textShadowRadius: 4,
+  },
+  bottomContainer: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 40,
+  },
+  button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 2,
   },
 });

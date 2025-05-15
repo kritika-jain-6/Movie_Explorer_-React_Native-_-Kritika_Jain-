@@ -7,6 +7,7 @@ import Explore from '../component/Explore';
 import Footer from '../component/Footer';
 import {updateDeviceToken} from '../api/NotificationApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'toastify-react-native';
 
 const Home = () => {
   useEffect(() => {
@@ -20,7 +21,7 @@ const Home = () => {
           
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        Toast.error('Error fetching user data:');
       }
       fetchUser();
     };
