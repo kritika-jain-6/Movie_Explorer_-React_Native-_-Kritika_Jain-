@@ -7,16 +7,16 @@ import {
   TextInput,
   TouchableOpacity,
   ImageBackground,
-
+  Image,
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
-import { Toast } from 'toastify-react-native';
+import {Toast} from 'toastify-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import withNavigation from '../navigation/withHOC';
 import {loginuser} from '../api/UserAPI';
-
 
 const {width, height} = Dimensions.get('window');
 
@@ -26,12 +26,13 @@ interface State {
   showPassword: boolean;
   loading: boolean;
   errorMessage: string;
-}import { NavigationProp } from '@react-navigation/native';
-import { AuthParamList } from '../types/types';
-
-type Props={
-  navigation: NavigationProp<AuthParamList>;
 }
+import {NavigationProp} from '@react-navigation/native';
+import {AuthParamList} from '../types/types';
+
+type Props = {
+  navigation: NavigationProp<AuthParamList>;
+};
 
 class Login extends Component<Props, State> {
   constructor(props: Props) {
@@ -90,7 +91,8 @@ class Login extends Component<Props, State> {
 
       if (token) {
         await AsyncStorage.setItem('authToken', token);
-     
+        console.log('Token:', token);
+
         await AsyncStorage.setItem('CurrentUser', JSON.stringify(user));
         Toast.success('Success Logged in!');
         if (role === 'supervisor') {
@@ -108,89 +110,98 @@ class Login extends Component<Props, State> {
         error.response?.data?.message || error.message || 'Login failed';
       this.setState({errorMessage: msg});
       Toast.error('Login Error');
+      console.log(error.response);
     } finally {
       this.setState({loading: false});
     }
   };
 
   render() {
-     const { navigation } = this.props;
+    const {navigation} = this.props;
     const {email, password, showPassword, loading, errorMessage} = this.state;
 
     return (
       <ImageBackground
         source={require('../assets/background.jpg')}
         style={styles.background}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-           
-            <Text style={styles.title}>Welcome to  {'\n'} BINGE</Text>
+        <KeyboardAvoidingView >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+              <Text style={styles.title}>Welcome to {'\n'} BINGE</Text>
 
-            {errorMessage ? (
-              <Text style={styles.errorText} testID="error-message">
-                {errorMessage}
-              </Text>
-            ) : null}
-
-            <TextInput
-              testID="email-input"
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="white"
-              value={email}
-              onChangeText={text => this.setState({email: text})}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              returnKeyType="next"
-              accessibilityLabel="Email Input"
-            />
-
-            <View>
-              <TextInput
-                testID="password-input"
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor="white"
-                value={password}
-                onChangeText={text => this.setState({password: text})}
-                secureTextEntry={!showPassword}
-                returnKeyType="done"
-                onSubmitEditing={this.handleLogin}
-                accessibilityLabel="Password Input"
-              />
-              <TouchableOpacity
-                onPress={() => this.setState({showPassword: !showPassword})}
-                style={styles.showPasswordButton}>
-                <Text style={styles.showPasswordText}>
-                  {showPassword ? 'Hide' : 'Show'}
+              {errorMessage ? (
+                <Text style={styles.errorText} testID="error-message">
+                  {errorMessage}
                 </Text>
+              ) : null}
+
+              <TextInput
+                testID="email-input"
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="white"
+                value={email}
+                onChangeText={text => this.setState({email: text})}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                returnKeyType="next"
+                accessibilityLabel="Email Input"
+              />
+
+              <View>
+                <TextInput
+                  testID="password-input"
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor="white"
+                  value={password}
+                  onChangeText={text => this.setState({password: text})}
+                  secureTextEntry={!showPassword}
+                  returnKeyType="done"
+                  onSubmitEditing={this.handleLogin}
+                  accessibilityLabel="Password Input"
+                />
+                <TouchableOpacity
+                  onPress={() => this.setState({showPassword: !showPassword})}
+                  style={styles.showPasswordButton}>
+                  {/* <Text style={styles.showPasswordText}>
+                  {showPassword ? 'Hide' : 'Show'}
+                  </Text> */}
+                  <Image
+                    source={
+                      showPassword
+                        ? require('../assets/view.png')
+                        : require('../assets/hide.png')
+                    }
+                    style={{width: 20, height: 20}}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                testID="login-button"
+                style={styles.button}
+                onPress={this.handleLogin}
+                disabled={loading}
+                accessibilityLabel="Login Button">
+                {loading ? (
+                  <ActivityIndicator color="black" />
+                ) : (
+                  <Text style={styles.buttonText}>Login</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Register')}>
+                <Text style={styles.registerText}>New Here? Register Now</Text>
               </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              testID="login-button"
-              style={styles.button}
-              onPress={this.handleLogin}
-              disabled={loading}
-              accessibilityLabel="Login Button">
-              {loading ? (
-                <ActivityIndicator color="black" />
-              ) : (
-                <Text style={styles.buttonText}>Login</Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Register')}>
-              <Text style={styles.registerText}>New Here? Register Now</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </ImageBackground>
     );
   }
 }
-
 
 export default withNavigation(Login);
 

@@ -13,23 +13,31 @@ import {getUser} from '../api/AuthAPI';
 import { RootStackParamList } from '../types/types';
 import { NavigationProp } from '@react-navigation/native';
 
+
 type Props={
   navigation: NavigationProp<RootStackParamList>;
 }
 
 const SplashScreen :React.FC<Props> =({navigation})=> {
   const handleStart = async () => {
+    console.log('Start button pressed');    
     try {
       const token = await AsyncStorage.getItem('authToken');
+      console.log('Token:', token);
+      
 
       if (token) {
         await getUser();
         navigation.navigate('MainTabs');
-      } else {
+        console.log(getUser());
+      }else{
         navigation.navigate('Login');
       }
     } catch (error) {
+      navigation.navigate('Login');
       Toast.error('Error fetching user data');
+      console.log(error);
+      
     }
   };
 

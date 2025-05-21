@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { updateDeviceToken } from './NotificationApi';
 
 
 const baseURL = 'https://movie-explorer-ror-aalekh-2ewg.onrender.com';
@@ -7,6 +8,7 @@ const baseURL = 'https://movie-explorer-ror-aalekh-2ewg.onrender.com';
 export const getUser = async () => {
   try {
     const token = await AsyncStorage.getItem('authToken');
+    const fcmToken = await AsyncStorage.getItem('fcmToken');
     console.log(token);
     const response = await axios.get(`${baseURL}/api/v1/current_user`,
       {
@@ -15,10 +17,16 @@ export const getUser = async () => {
       },
     }
   );
+
+    if (fcmToken) {
+      const updateToken = await updateDeviceToken(fcmToken);
+      console.log(updateToken);
+      
+    }
     return response.data;
 
   } catch (error) {
-    // console.log('Error fetching user:', error.response);
+    console.log('Error fetching user:', error.response);
     throw error;
   }
 };
@@ -35,7 +43,7 @@ export const logoutUser = async () => {
   );
     return response.data;
   } catch (error) {
-    // console.log('Error logging out user:', error.response);
+    console.log('Error logging out user:', error.response);
     throw error;
   }
 };

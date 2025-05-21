@@ -4,8 +4,12 @@ import { useWatchlist } from '../context/Watchlist';
 import { useNavigation } from '@react-navigation/native';
 
 const WatchList = () => {
-  const { watchlist } = useWatchlist();
+  const { watchlist, removeFromWatchlist } = useWatchlist();
   const navigation = useNavigation();
+
+  const handleRemoveWatchList = (id: string) => {
+    removeFromWatchlist(id);
+  };
 
   const renderEmptyList = () => (
     <View style={styles.emptyContainer}>
@@ -15,29 +19,27 @@ const WatchList = () => {
 
   return (
     <View style={styles.container}>
-
-      <View>
+      {/* Header */}
+      <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
           testID="back-button"
         >
-          <View style={styles.overlay}>
-            <Image
-              source={{ uri: 'https://cdn-icons-png.flaticon.com/512/93/93634.png' }}
-              style={styles.icon}
-            />
-            <Text style={styles.screenTitle} testID="screen-title">My Watchlist</Text>
-          </View>
+          <Image
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/93/93634.png' }}
+            style={styles.icon}
+          />
         </TouchableOpacity>
+        <Text style={styles.screenTitle} testID="screen-title">My Watchlist</Text>
       </View>
 
-
+      {/* Watchlist */}
       <FlatList
         data={watchlist}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderEmptyList}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 10 }}
         renderItem={({ item }) => (
           <View style={styles.card} testID={`watchlist-card-${item.id}`}>
             <Image source={{ uri: item.poster_url }} style={styles.poster} />
@@ -45,6 +47,18 @@ const WatchList = () => {
               <Text style={styles.title}>{item.title}</Text>
               <Text style={styles.meta}>{item.genre} | {item.release_year}</Text>
               <Text style={styles.rating}>⭐ {item.rating}/10</Text>
+
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleRemoveWatchList(item.id)}
+                testID={`delete-button-${item.id}`}
+              >
+                <Image
+                  source={require('../assets/bin.png')}
+                  style={styles.deleteIcon}
+                />
+                <Text style={styles.deleteText}>Remove</Text>
+              </TouchableOpacity>
             </View>
           </View>
         )}
@@ -60,34 +74,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 20,
   },
-  backButton: {
-    position: 'absolute',
-    top: 10,
-    left: 1,
-    zIndex: 10,
-  },
-  overlay: {
+  header: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  backButton: {
+    padding: 8,
   },
   icon: {
     width: 24,
     height: 24,
     tintColor: '#fff',
-    marginTop: 10,
-    marginRight: 80,
-    marginLeft: 0,
   },
   screenTitle: {
     fontSize: 24,
     color: '#FFD700',
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
+    marginLeft: 16,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 70,
     marginBottom: 16,
     backgroundColor: '#111',
     borderRadius: 10,
@@ -119,6 +128,27 @@ const styles = StyleSheet.create({
   rating: {
     color: '#aaa',
     fontSize: 14,
+    marginBottom: 8,
+  },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ff4444',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  deleteIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 6,
+    tintColor: '#fff',
+  },
+  deleteText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   emptyContainer: {
     marginTop: 100,

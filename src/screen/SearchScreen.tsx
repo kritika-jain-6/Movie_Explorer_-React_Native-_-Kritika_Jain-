@@ -19,9 +19,9 @@ const allCategories = [
   {label: 'Comedy', color: '#6BCBFF'},
   {label: 'Drama', color: '#9B59B6'},
   {label: 'Horror', color: '#2C3E50'},
-  {label: 'Sci-Fi', color: '#FFA07A'},
+  {label: 'Si-Fi', color: '#FFA07A'},
   {label: 'Romance', color: '#FF69B4'},
-  {label: 'Fantasy', color: '#00FA9A'},
+  {label: 'Adventure', color: '#00FA9A'},
   {label: 'Thriller', color: '#808080'},
 ];
 
@@ -192,6 +192,12 @@ const handleGenreSelect = async (genre) => {
                   source={{uri: item.poster_url}}
                   style={styles.trendingImage}
                 />
+                  {item.premium && (
+                          <View style={{ position: 'absolute', top: 5,left:2}}>
+                            <Text style={{ color: '#fff', backgroundColor: '#FFD700', padding: 5 }}>
+                              Premium
+                            </Text>
+                           </View>)}
                 <Text style={styles.trendingTitle}>{item.title}</Text>
               </TouchableOpacity>
             ))}

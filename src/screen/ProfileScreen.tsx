@@ -20,6 +20,7 @@ const ProfileScreen = () => {
     avatar: '',
   });
   const [subscriptionPlan, setSubscriptionPlan] = useState<string>('');
+  // const [expiryDate, setExpiryDate] = useState<string>(' ');
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -37,9 +38,14 @@ const ProfileScreen = () => {
         });
 
         const subData = await fetchUserSubscription();
-        // console.log('subData', subData);
-        
+        console.log('subData', subData);
+
         setSubscriptionPlan(subData.plan_type || 'No subscription');
+        // setExpiryDate(subData.expires_at || 'No expiry date');
+        // console.log('Subscription Plan:', subData.plan_type);
+        // console.log('Expiry Date:', subData.expires_at);
+        
+
       } catch (error) {
         Toast.error('Error fetching user data.');
       } finally {
@@ -74,10 +80,7 @@ const ProfileScreen = () => {
         <TouchableOpacity
           style={styles.avatarContainer}
           testID="add-photo-button">
-          <Image
-            source={require('../assets/user.png')}
-            style={styles.avatar}
-          />
+          <Image source={require('../assets/user.png')} style={styles.avatar} />
         </TouchableOpacity>
       </View>
 
@@ -126,6 +129,16 @@ const ProfileScreen = () => {
           editable={false}
         />
       </View>
+      {/* <View style={styles.inputContainer}>
+        <Text style={styles.label}>Subscription Expiry</Text>
+        <TextInput
+          style={styles.input}
+          value={expiryDate}
+          placeholder="Expiry date"
+          placeholderTextColor="#999"
+          editable={false}
+        />
+      </View> */}
 
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Logout</Text>

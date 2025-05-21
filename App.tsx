@@ -24,8 +24,7 @@ const App = () => {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-     
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {     
       getToken();
     } else {
       Alert.alert('Notification permission denied');

@@ -48,12 +48,20 @@ const AdminHome = () => {
     fetchMovies();
   }, []);
 
-  const handleAddMovie = async (movie: { id: string; title: string; year: string; poster: string }) => {
+  const handleAddMovie = async (formData: FormData) => {
+    console.log('formData', formData);
+    
     try {
-      const newMovie = await addMovie(movie.title);
+      // Extract fields from FormData
+      const newMovie = await addMovie(formData);
+      console.log('newMovie', newMovie);
+      
       setMovies((prev) => [newMovie, ...prev]);
       setModalVisible(false);
     } catch (error) {
+      console.log(error);
+      
+      
       Toast.error('Error Failed to add movie');
     }
   };
@@ -67,17 +75,19 @@ const AdminHome = () => {
     }
   };
 
-  const handleEdit = (movie: { id: string; title: string; year: string; poster: string }) => {
+  const handleEdit = (movie) => {
+    console.log('movie', movie);
+    
     setEditingMovie(movie);
     setModalVisible(true);
   };
 
-  const handleEditMovie = async (updatedMovie: { id: string; title: string; year: string; poster: string }) => {
+  const handleEditMovie = async (id, formData: FormData) => {
+    console.log('formData',formData);
+    console.log('id',id);
+    
     try {
-      const updated = await updateMovie({
-        ...updatedMovie,
-        id: Number(updatedMovie.id),
-      });
+      const updated = await updateMovie(id, formData);
       setMovies((prev) =>
         prev.map((m) => (m.id === updated.id ? updated : m))
       );
@@ -87,10 +97,10 @@ const AdminHome = () => {
     }
   };
 
-  const renderMovie = ({ item }: { item: { id: string; title: string; release_year: string; poster_url: string } }) => (
+  const renderMovie = ({ item }) => (
     <View style={styles.movieCard}>
       <Image
-        source={{ uri: item.poster_url }}
+        source={{ uri: item.poster_url}}
         style={styles.poster}
         resizeMode="cover"
 
@@ -100,12 +110,7 @@ const AdminHome = () => {
         <Text style={styles.movieYear}>{item.release_year}</Text>
       </View>
       <View style={styles.movieActions}>
-        <TouchableOpacity onPress={() => handleEdit({
-          id: item.id,
-          title: item.title,
-          year: item.release_year,
-          poster: item.poster_url,
-        })}>
+        <TouchableOpacity onPress={() => handleEdit(item)}>
           <Image source={require('../assets/pencil.png')} style={styles.actionIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDelete(item.id)}>
@@ -142,14 +147,8 @@ const AdminHome = () => {
         <Text style={styles.headerText}>Recent Activities</Text>
       </View>
 
-      {/* Movie List */}
       <FlatList
-        data={movies.map(movie => ({
-          id: movie.id,
-          title: movie.title,
-          release_year: movie.year,
-          poster_url: movie.poster,
-        }))}
+        data={movies}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         onEndReached={fetchMovies}
         onEndReachedThreshold={0.5}

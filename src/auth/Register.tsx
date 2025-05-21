@@ -5,6 +5,7 @@ import {
   Dimensions,
   StyleSheet,
   TextInput,
+  Image,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
@@ -73,7 +74,7 @@ class Register extends Component<Props, State> {
     try {
       await registeruser(name, mobilenumber, email, password);
       Toast.success('Success Registration successful!');
-      this.props.navigation.navigate('MainTabs');
+      this.props.navigation.navigate('Login');
     } catch (error) {
       Toast.error('Registration Error');
     }
@@ -150,9 +151,14 @@ class Register extends Component<Props, State> {
             <TouchableOpacity
               style={styles.showPasswordButton}
               onPress={() => this.togglePasswordVisibility('password')}>
-              <Text style={styles.toggleText}>
-                {securePassword ? 'Show ' : 'Hide '}
-              </Text>
+              <Image
+                source={
+                  securePassword
+                  ?require('../assets/hide.png')
+                    :require('../assets/view.png')
+                }
+                style={{width: 20, height: 20}}
+              />
             </TouchableOpacity>
           </View>
 
@@ -169,9 +175,14 @@ class Register extends Component<Props, State> {
             <TouchableOpacity
               style={styles.showPasswordButton}
               onPress={() => this.togglePasswordVisibility('confirmPassword')}>
-              <Text style={styles.toggleText}>
-                {secureConfirmPassword ? 'Show ' : 'Hide '}
-              </Text>
+              <Image
+                source={
+                  secureConfirmPassword
+                    ? require('../assets/hide.png')
+                    : require('../assets/view.png')
+                }
+                style={{width: 20, height: 20}}
+              />
             </TouchableOpacity>
           </View>
 

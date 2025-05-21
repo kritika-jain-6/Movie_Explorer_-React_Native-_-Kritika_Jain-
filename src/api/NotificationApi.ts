@@ -23,7 +23,7 @@ export const updateDeviceToken = async (
             device_token: fcmToken,
         };
         const response = await axios.post<UpdateDeviceTokenResponse>(
-            `${BASE_URL}/v1/update_device_token`,
+            `${BASE_URL}/api/v1/update_device_token`,
             requestBody,
             {
                 headers: {

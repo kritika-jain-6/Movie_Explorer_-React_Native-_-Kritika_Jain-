@@ -63,7 +63,7 @@ export const MovieCarousel = () => {
         width={width}
         height={500}
         data={movies}
-        scrollAnimationDuration={5000}
+        scrollAnimationDuration={2000}
         mode="parallax"
         renderItem={({ item }: any) => (
           <TouchableOpacity onPress={() => navigation.navigate('SearchResults', { movie: item })}>
@@ -73,7 +73,12 @@ export const MovieCarousel = () => {
                 style={styles.image}
                 imageStyle={{ borderRadius: 12 }}
                 resizeMode="contain"
-              >
+              >  {item?.premium && (
+                        <View style={{ position: 'absolute', top: 10,left:2}}>
+                          <Text style={{ color: '#fff', backgroundColor: '#FFD700', padding: 10 }}>
+                            Premium
+                          </Text>
+                         </View>)}
                 <View style={styles.overlay}>
                   <Text style={styles.title}>{item?.title}</Text>
                   <Text style={styles.meta}>

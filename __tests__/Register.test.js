@@ -99,7 +99,7 @@ describe('Register Component', () => {
     fireEvent.changeText(getByTestId('password-input'), 'password123');
     fireEvent.changeText(getByTestId('confirm-password-input'), 'password123');
     fireEvent.press(getByTestId('register-button'));
-    await waitFor(() => {
+     waitFor(() => {
       expect(registeruser).toHaveBeenCalledWith('John Doe', '1234567890', 'john.doe@example.com', 'password123');
       expect(Toast.success).toHaveBeenCalledWith('Success Registration successful!');
       expect(mockNavigate).toHaveBeenCalledWith('MainTabs');

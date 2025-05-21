@@ -5,21 +5,15 @@ import MovieCarousel from '../component/MovieCarousel';
 import BornCard from '../component/BornCard';
 import Explore from '../component/Explore';
 import Footer from '../component/Footer';
-import {updateDeviceToken} from '../api/NotificationApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'toastify-react-native';
+import { getUser } from '../api/AuthAPI';
+import MovieCard from '../component/MovieCard';
 
 const Home = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
-        const fcmToken = await AsyncStorage.getItem('fcmToken');
-        if (token && fcmToken) {
-          const res = await updateDeviceToken(fcmToken);
-          console.log(res);
-          
-        }
+         await getUser();
       } catch (error) {
         Toast.error('Error fetching user data:');
       }
@@ -41,7 +35,7 @@ const Home = () => {
         <Text style={styles.subHeader} testID="TopTenHeader">
           Top Ten
         </Text>
-        <Card />
+        <MovieCard/>
         <Text style={styles.subHeader} testID="BornTodayHeader">
           Born Today
         </Text>

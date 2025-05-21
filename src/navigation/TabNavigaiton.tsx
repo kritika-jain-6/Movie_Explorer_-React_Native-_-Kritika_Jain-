@@ -61,7 +61,7 @@ const TabNavigation = () => {
             <Image
               source={
                 focused
-                  ? require('../assets/wallet.png') // Replace with actual icon
+                  ? require('../assets/wallet.png') 
                   : require('../assets/wallet-outline.png')
               }
               style={styles.icon}

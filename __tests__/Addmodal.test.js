@@ -67,6 +67,11 @@ describe('AddMovieModal - Unit Tests', () => {
       title: 'Inception Updated',
       genre: 'Action',
     });
+
+    expect(mockOnClose).toHaveBeenCalled();
+
+    expect(mockOnAdd).not.toHaveBeenCalled();
+    
   });
 
   it('shows validation messages when submitting empty form', () => {

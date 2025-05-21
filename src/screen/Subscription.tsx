@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,17 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { Toast } from 'toastify-react-native';
+import  {Toast}  from 'toastify-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { createSubscription } from '../api/SubscriptionApi';
+import { createSubscription, fetchUserSubscription } from '../api/SubscriptionApi';
+
 import plans from '../data/Plandata'
 
 
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [hasActiveSubscription , setHasActiveSubscription]=useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -23,9 +25,31 @@ const Subscription = () => {
     setSelectedPlan(planId);
   };
 
+  useEffect(()=>{
+    const fetchSubscription = async () => {
+      try {
+        const subscriptionData = await fetchUserSubscription();
+        if (subscriptionData.plan_type === 'premium') {
+          setHasActiveSubscription(true);
+        } else {
+          setHasActiveSubscription(false);
+        }
+      } catch (error) {
+        console.error('Error fetching subscription:', error);
+      }
+    };
+
+    fetchSubscription();
+  },[])
+
  const handleSubscribe = async () => {
   if (!selectedPlan) {
     Toast.error('Please select a plan to subscribe.');
+    return;
+  }
+  
+   if (hasActiveSubscription) {
+    Toast.info('You already have an active subscription.');
     return;
   }
 
@@ -104,8 +128,8 @@ const Subscription = () => {
         <TouchableOpacity
           onPress={handleSubscribe}
           style={styles.startButton}
-          disabled={isLoading}>
-          {isLoading ? (
+          disabled={isLoading || hasActiveSubscription}>
+          {isLoading || hasActiveSubscription ? (
             <ActivityIndicator color="#000" />
           ) : (
             <Text style={styles.buttonText}>Subscribe</Text>

@@ -2,8 +2,8 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MovieDetailScreen from '../screen/MovieDetailScreen';
 import Home from '../screen/HomeScreen';
-import WatchList from '../screen/WatchList';
 import Explore from '../component/Explore';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -25,11 +25,7 @@ export default function SearchNavigation() {
         component={MovieDetailScreen}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="WatchList"
-        component={WatchList}
-        options={{headerShown: false}}
-      />
+    
     </Stack.Navigator>
   );
 }

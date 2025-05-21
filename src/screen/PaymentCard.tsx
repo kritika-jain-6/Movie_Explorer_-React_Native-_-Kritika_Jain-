@@ -6,7 +6,7 @@ import {useRoute, useNavigation} from '@react-navigation/native';
 const PaymentScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { url, session_id } = route.params as PaymentScreenRouteParams;
+  const { url } = route.params as PaymentScreenRouteParams;
 
   interface PaymentScreenRouteParams {
     url: string;

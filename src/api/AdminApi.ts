@@ -21,8 +21,9 @@ export const addMovie = async (movie:string) => {
     const response = await axios.post(
       `${baseURL}/api/v1/movies`,
       movie,
-      {
+      {   
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       }
@@ -39,21 +40,24 @@ export interface MovieUpdatePayload {
   [key: string]: any;
 }
 
-export const updateMovie = async (movie: MovieUpdatePayload) => {
+export const updateMovie = async (id, movie: MovieUpdatePayload) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.patch(
-      `${baseURL}/api/v1/movies/${movie.id}`,
-      { movie },
+      `${baseURL}/api/v1/movies/${id}`,
+      movie,
       {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       }
     );
+    console.log(response.data);
+    
     return response.data;
   } catch (error) {
-    // console.log('Error updating movie:', error.response?.data || error.message);
+    console.log('Error updating movie:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -68,7 +72,7 @@ export const deleteMovie = async (id:string) => {
     });
     return response.data;
   } catch (error) {
-    // console.log('Error deleting movie:', error.response?.data || error.message);
+    console.log('Error deleting movie:', error.response?.data || error.message);
     throw error;
   }
 };

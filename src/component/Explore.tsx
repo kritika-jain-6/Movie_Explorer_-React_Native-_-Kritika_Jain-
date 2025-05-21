@@ -154,6 +154,12 @@ const Explore = () => {
                 style={styles.moviePoster}
                 resizeMode="cover"
               />
+                {item.premium && (
+                        <View style={{ position: 'absolute', top: 5,left:2}}>
+                          <Text style={{ color: '#fff', backgroundColor: '#FFD700', padding: 5 }}>
+                            Premium
+                          </Text>
+                         </View>)}
               <Text style={styles.movieTitle}>{item.title}</Text>
             </View>
           </TouchableOpacity>

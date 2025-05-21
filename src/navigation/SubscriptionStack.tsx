@@ -2,8 +2,8 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Subscription from '../screen/Subscription';
 import PaymentCard from '../screen/PaymentCard';
-import Home from '../navigation/HomeStack';
 
+import MovieDetailScreen from '../screen/MovieDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,11 +21,10 @@ export default function SubscriptionStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Home"
-        component={Home}
+        name="MovieDetailScreen"
+        component={MovieDetailScreen}
         options={{headerShown: false}}
       />
-      
     </Stack.Navigator>
   );
 }

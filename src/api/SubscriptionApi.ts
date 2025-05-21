@@ -10,20 +10,27 @@ interface CreateSubscriptionResponse {
 
 export const createSubscription = async (
   planType: string
+  // expiresAt: string
 ): Promise<CreateSubscriptionResponse> => {
   try {
     const token = await AsyncStorage.getItem('authToken');
+
     const response = await axios.post<CreateSubscriptionResponse>(
       `${BASE_URL}/api/v1/subscriptions`,
-      { plan_type: planType, client_type: 'mobile' },
-
+      {
+        plan_type: planType,
+        client_type: 'mobile',
+        // expires_at: new Date(expires_at),
+      },      
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
+
     return response.data;
+    // console.log('Subscription created:', response.data);
   } catch (error) {
     Toast.error('Error fetching subscription:');
     throw error;

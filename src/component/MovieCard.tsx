@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { getMovieDetails } from '../api/MovieAPI';
+import { getMovieDetail } from '../api/MovieAPI';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -60,7 +60,7 @@ export const MovieItem = React.memo(({ item }: { item: Movie }) => {
   );
 });
 
-const Card = () => {
+const MovieCard = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,15 +68,18 @@ const Card = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const movieData = await getMovieDetails();
+        const movieData = await getMovieDetail();
         setMovies(movieData.movies);
       } catch (err: any) {
+        console.log(err.response);
+        
         setError('Failed to fetch movies. Please try again.');
       } finally {
         setLoading(false);
       }
     };
-
+    console.log(movies);
+    
     fetchMovies();
   }, []);
 
@@ -160,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card;
+export default MovieCard;

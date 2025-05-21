@@ -14,8 +14,8 @@ import { launchImageLibrary } from 'react-native-image-picker';
 interface AddMovieModalProps {
   visible: boolean;
   onClose: () => void;
-  onAdd: (form: any) => void;
-  onEdit?: (form: any) => void;
+  onAdd: (formData: FormData) => void;
+  onEdit?:(id:string,formData:FormData)=>void;
   movie?: any;
 }
 
@@ -36,8 +36,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     director: string;
     main_lead: string;
     streaming_platform: string;
-    poster: { uri: string } | null;
-    banner: { uri: string } | null;
+    poster: any;
+    banner: any;
   }
 
   const [form, setForm] = useState<FormState>({
@@ -68,9 +68,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     if (movie) {
       setForm({
         ...movie,
-        release_year: movie.release_year || 0,
-        duration: movie.duration || 0,
-        rating: movie.rating || 0,
+        release_year: movie.release_year,
+        duration: movie.duration,
+        rating: movie.rating,
         poster: movie.poster ? { uri: movie.poster } : null,
         banner: movie.banner ? { uri: movie.banner } : null,
       });
@@ -99,7 +99,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     const newErrors = {
       title: form.title ? '' : 'Title cannot be blank',
       release_year:
-        typeof form.release_year === 'number' && form.release_year >= 1900 && form.release_year <= new Date().getFullYear()
+        typeof form.release_year === 'number' &&
+        form.release_year >= 1900 &&
+        form.release_year <= new Date().getFullYear()
           ? ''
           : 'Release year must be a valid 4-digit number',
       duration: form.duration > 0 ? '' : 'Duration must be a positive integer',
@@ -108,6 +110,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
         : 'Streaming platform is not valid',
       main_lead: form.main_lead ? '' : "Main lead can't be blank",
     };
+    console.log(newErrors);
+    
     setErrors(newErrors);
 
     return Object.values(newErrors).every(error => error === '');
@@ -121,14 +125,51 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     });
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      const payload = {
-        ...form,
-        poster: form.poster?.uri || '',
-        banner: form.banner?.uri || '',
-      };
-      movie && onEdit ? onEdit(payload) : onAdd(payload);
+  const handleSubmit = async () => {
+    console.log(form);
+    
+    if (!validateForm()) {
+      console.log('Validation failed:', errors);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('movie[title]', form.title);
+    formData.append('movie[description]', form.description);
+    formData.append('movie[genre]', form.genre);
+    formData.append('movie[release_year]', String(form.release_year));
+    formData.append('movie[duration]', String(form.duration));
+    formData.append('movie[rating]', String(form.rating));
+    formData.append('movie[director]', form.director);
+    formData.append('movie[main_lead]', form.main_lead);
+    formData.append('movie[streaming_platform]', form.streaming_platform);
+
+    if (form.poster) {
+      console.log(form.poster);      
+      formData.append('movie[poster]', {
+        uri: form.poster.uri,
+        name: form.poster.fileName || 'poster.jpg',
+        type: form.poster.type || 'image/jpeg',
+      } as any);
+    }
+
+    if (form.banner) {
+      console.log(form.banner);
+      
+      formData.append('movie[banner]', {
+        uri: form.banner.uri,
+        name: form.banner.fileName || 'banner.jpg',
+        type: form.banner.type || 'image/jpeg',
+      } as any);
+    }
+
+    try {
+      console.log(movie);      
+      movie && onEdit ? onEdit(movie.id, formData) : onAdd(formData);
+      // console.log(movie);
+      
+    } catch (error) {
+      console.error('Submission failed:', error);
     }
   };
 
@@ -140,7 +181,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
             <Text style={styles.header}>{movie ? 'Edit Movie' : 'Add New Movie'}</Text>
             <Text style={styles.section}>Movie Details</Text>
 
-            {[{ label: 'Movie Title', key: 'title', error: errors.title },
+            {[
+              { label: 'Movie Title', key: 'title', error: errors.title },
               { label: 'Description', key: 'description' },
               { label: 'Genre', key: 'genre' },
               { label: 'Release Year', key: 'release_year', error: errors.release_year },
@@ -158,11 +200,11 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                   placeholderTextColor="#aaa"
                   value={String(form[key as keyof FormState])}
                   onChangeText={text =>
-                    (key === 'release_year' || key === 'duration' || key === 'rating')
+                    ['release_year', 'duration', 'rating'].includes(key)
                       ? handleChange(key as keyof FormState, Number(text))
                       : handleChange(key as keyof FormState, text)
                   }
-                  keyboardType={key === 'release_year' || key === 'duration' || key === 'rating' ? 'numeric' : 'default'}
+                  keyboardType={['release_year', 'duration', 'rating'].includes(key) ? 'numeric' : 'default'}
                 />
                 {error && <Text style={styles.errorText}>{error}</Text>}
               </View>
@@ -170,18 +212,10 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
             <Text style={styles.section}>Media Files</Text>
             <View style={styles.uploadRow}>
-              <TouchableOpacity
-                style={styles.uploadBtn}
-                onPress={() => handleImagePick('poster')}
-                testID="upload-poster"
-              >
+              <TouchableOpacity style={styles.uploadBtn} onPress={() => handleImagePick('poster')} testID="upload-poster">
                 <Text style={styles.uploadText}>UPLOAD POSTER</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.uploadBtn}
-                onPress={() => handleImagePick('banner')}
-                testID="upload-banner"
-              >
+              <TouchableOpacity style={styles.uploadBtn} onPress={() => handleImagePick('banner')} testID="upload-banner">
                 <Text style={styles.uploadText}>UPLOAD BANNER</Text>
               </TouchableOpacity>
             </View>
