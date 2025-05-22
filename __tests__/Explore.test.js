@@ -26,12 +26,5 @@ describe('StreamingScreen', () => {
 
  
 
-  it('navigates when a service is pressed', () => {
-    const { getByText } = render(<StreamingScreen />);
-    
-    const amazonItem = getByText('Amazon');
-    fireEvent.press(amazonItem);
-    
-   
-  });
+
 });

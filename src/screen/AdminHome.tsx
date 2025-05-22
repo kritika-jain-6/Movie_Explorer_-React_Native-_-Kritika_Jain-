@@ -49,19 +49,17 @@ const AdminHome = () => {
   }, []);
 
   const handleAddMovie = async (formData: FormData) => {
-    console.log('formData', formData);
+    // console.log('formData', formData);
     
     try {
-      // Extract fields from FormData
+     
       const newMovie = await addMovie(formData);
-      console.log('newMovie', newMovie);
+      // console.log('newMovie', newMovie);
       
       setMovies((prev) => [newMovie, ...prev]);
       setModalVisible(false);
     } catch (error) {
-      console.log(error);
-      
-      
+    //   console.log(error);      
       Toast.error('Error Failed to add movie');
     }
   };
@@ -75,16 +73,16 @@ const AdminHome = () => {
     }
   };
 
-  const handleEdit = (movie) => {
-    console.log('movie', movie);
+  const handleEdit = (movie:any) => {
+    // console.log('movie', movie);
     
     setEditingMovie(movie);
     setModalVisible(true);
   };
 
-  const handleEditMovie = async (id, formData: FormData) => {
-    console.log('formData',formData);
-    console.log('id',id);
+  const handleEditMovie = async (id:number, formData: FormData) => {
+    // console.log('formData',formData);
+    // console.log('id',id);
     
     try {
       const updated = await updateMovie(id, formData);
@@ -97,17 +95,17 @@ const AdminHome = () => {
     }
   };
 
-  const renderMovie = ({ item }) => (
+  const renderMovie = ({ item }: { item: { id: string; title: string; year: string; poster: string; poster_url?: string; release_year?: string } }) => (
     <View style={styles.movieCard}>
       <Image
-        source={{ uri: item.poster_url}}
+        source={{ uri: item.poster_url || item.poster }}
         style={styles.poster}
         resizeMode="cover"
 
       />
       <View style={styles.movieInfo}>
         <Text style={styles.movieTitle}>{item.title}</Text>
-        <Text style={styles.movieYear}>{item.release_year}</Text>
+        <Text style={styles.movieYear}>{item.release_year || item.year}</Text>
       </View>
       <View style={styles.movieActions}>
         <TouchableOpacity onPress={() => handleEdit(item)}>
@@ -130,7 +128,10 @@ const AdminHome = () => {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setModalVisible(true)
+         
+        }
+         testID="add-movie-button"
       >
         <Text style={styles.addButtonText}>+ Add New Movie</Text>
       </TouchableOpacity>
@@ -172,7 +173,6 @@ const AdminHome = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#121212', paddingHorizontal: 16, paddingTop: 32 },
 
-  // Header Styling
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   headerText: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
   avatar: { width: 32, height: 32, borderRadius: 16 },
 
-  // Add Button Styling
+
   addButton: {
     backgroundColor: '#3B82F6',
     paddingVertical: 12,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold', fontSize: 16 },
 
-  // Stats Section
+
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   },
   statText: { color: '#fff', fontWeight: '600', fontSize: 16 },
 
-  // Movie List Section
   movieListContainer: {
     paddingBottom: 30,
   },
@@ -233,7 +232,6 @@ const styles = StyleSheet.create({
   movieActions: { flexDirection: 'row', alignItems: 'center' },
   actionIcon: { width: 20, height: 20, marginLeft: 12, tintColor: '#ccc' },
 
-  // Footer Styling
   footerContainer: {
     alignItems: 'center',
     justifyContent: 'center',

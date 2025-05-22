@@ -15,7 +15,7 @@ export const getMovies = async () => {
     }
   };
 
-export const addMovie = async (movie:string) => {
+export const addMovie = async (movie:any) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.post(
@@ -40,7 +40,7 @@ export interface MovieUpdatePayload {
   [key: string]: any;
 }
 
-export const updateMovie = async (id, movie: MovieUpdatePayload) => {
+export const updateMovie = async (id:number, movie: any) => {
   try {
     const token = await AsyncStorage.getItem('authToken');
     const response = await axios.patch(
@@ -57,7 +57,7 @@ export const updateMovie = async (id, movie: MovieUpdatePayload) => {
     
     return response.data;
   } catch (error) {
-    console.log('Error updating movie:', error.response?.data || error.message);
+    // console.log('Error updating movie:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -72,7 +72,7 @@ export const deleteMovie = async (id:string) => {
     });
     return response.data;
   } catch (error) {
-    console.log('Error deleting movie:', error.response?.data || error.message);
+    // console.log('Error deleting movie:', error.response?.data || error.message);
     throw error;
   }
 };

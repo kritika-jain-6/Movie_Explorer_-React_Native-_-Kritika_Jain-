@@ -9,17 +9,22 @@ import {
 } from 'react-native';
 import  {Toast}  from 'toastify-react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { createSubscription, fetchUserSubscription } from '../api/SubscriptionApi';
 
 import plans from '../data/Plandata'
 
 
+type RootStackParamList = {
+  PaymentCard: { url: string; session_id?: string };
+
+};
+
 const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [hasActiveSubscription , setHasActiveSubscription]=useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);

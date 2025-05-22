@@ -1,11 +1,12 @@
 import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, NavigationProp} from '@react-navigation/native';
+import { HomeStackParamList } from '../types/types';
 
 const PaymentScreen = () => {
   const route = useRoute();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const { url } = route.params as PaymentScreenRouteParams;
 
   interface PaymentScreenRouteParams {
@@ -21,7 +22,9 @@ const PaymentScreen = () => {
   const handleNavigationStateChange = (navState: NavigationState): void => {
     console.log(navState.url);
     if (navState.url.includes('success')) {
-      navigation.navigate('Home');
+      navigation.navigate('Success');
+    } else if (navState.url.includes('cancel')) {
+      navigation.navigate('Cancel');
     }
   };
 

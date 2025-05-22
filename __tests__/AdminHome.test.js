@@ -8,6 +8,12 @@
   jest.mock('../src/component/Addmodal', () => {
     return ({ visible, onClose, onAdd, onEdit, movie }) => null;
   });
+jest.mock('toastify-react-native', () => ({
+  Toast: { error: jest.fn() },
+}));
+
+
+
 
   describe('AdminHome Screen', () => {
     const mockMovies = [

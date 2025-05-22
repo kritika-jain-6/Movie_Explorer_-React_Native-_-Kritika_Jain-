@@ -10,7 +10,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { getMovieDetail } from '../api/MovieAPI';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HomeStackParamList} from '../types/types';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -18,6 +20,7 @@ const { width, height } = Dimensions.get('window');
 export interface Movie {
   id: string;
   title: string;
+  description: string;
   genre: string;
   rating: string;
   release_year: string;
@@ -27,14 +30,14 @@ export interface Movie {
 }
 
 export const MovieItem = React.memo(({ item }: { item: Movie }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
 
   return (
     <TouchableOpacity
       onPress={() =>
         typeof navigation.navigate === 'function' &&
-        navigation.navigate('SearchResults', { movie: item })
+        navigation.navigate('MovieDetailScreen', { movie: item })
       }
     >
       <View style={styles.item}>

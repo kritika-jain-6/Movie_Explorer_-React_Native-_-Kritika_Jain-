@@ -144,7 +144,7 @@ const handleGenreSelect = async (genre) => {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={styles.container} >
       <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16,marginTop:20}}>
         <TouchableOpacity
           style={styles.backButton}
@@ -235,7 +235,7 @@ const handleGenreSelect = async (genre) => {
           <Text style={styles.recentText}>{item}</Text>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 };
 

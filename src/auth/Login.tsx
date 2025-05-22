@@ -164,9 +164,7 @@ class Login extends Component<Props, State> {
                 <TouchableOpacity
                   onPress={() => this.setState({showPassword: !showPassword})}
                   style={styles.showPasswordButton}>
-                  {/* <Text style={styles.showPasswordText}>
-                  {showPassword ? 'Hide' : 'Show'}
-                  </Text> */}
+             
                   <Image
                     source={
                       showPassword

@@ -55,7 +55,7 @@ const SplashScreen :React.FC<Props> =({navigation})=> {
           testID="splash-logo"
         />
         <Text style={styles.title} testID="splash-text">
-          Welcome to BINGE
+          Welcome to {"\n"}BINGE
         </Text>
       </View>
       <View style={styles.bottomContainer} testID="bottom-container">

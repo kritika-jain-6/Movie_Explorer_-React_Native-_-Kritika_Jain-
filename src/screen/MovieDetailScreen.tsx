@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
 import { useWatchlist } from '../context/Watchlist';
 import { fetchUserSubscription } from '../api/SubscriptionApi';
 
@@ -31,9 +31,16 @@ interface MovieDetailScreenProps {
   route: RouteProp<Record<string, MovieDetailScreenRouteParams>, string>;
 }
 
+type RootStackParamList = {
+  MovieDetail: { movie: Movie };
+  WatchList: undefined;
+  SubscriptionStack: undefined;
+  
+};
+
 const MovieDetailScreen: React.FC<MovieDetailScreenProps> = ({ route }) => {
   const { movie } = route.params;
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [added, setAdded] = useState(false);
   const [isPremiumLocked, setIsPremiumLocked] = useState(false);
   const [loading, setLoading] = useState(true);

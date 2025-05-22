@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React, {Component, useEffect} from 'react';
+import React, { useEffect} from 'react';
 import Card from '../component/Card';
 import MovieCarousel from '../component/MovieCarousel';
 import BornCard from '../component/BornCard';

@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { getMovieDetails } from '../api/MovieAPI';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '../types/types';
 
 const { width } = Dimensions.get('window');
 
@@ -18,7 +20,7 @@ export const MovieCarousel = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -66,7 +68,7 @@ export const MovieCarousel = () => {
         scrollAnimationDuration={2000}
         mode="parallax"
         renderItem={({ item }: any) => (
-          <TouchableOpacity onPress={() => navigation.navigate('SearchResults', { movie: item })}>
+          <TouchableOpacity onPress={() => navigation.navigate('MovieDetailScreen', { movie: item })}>
             <View style={styles.card}>
               <ImageBackground
                 source={{ uri: item.poster_url }}

@@ -15,7 +15,7 @@ interface AddMovieModalProps {
   visible: boolean;
   onClose: () => void;
   onAdd: (formData: FormData) => void;
-  onEdit?:(id:string,formData:FormData)=>void;
+  onEdit?:(id:number,formData:FormData)=>void;
   movie?: any;
 }
 

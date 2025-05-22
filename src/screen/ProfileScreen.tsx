@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Toast} from 'toastify-react-native';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {getUser, logoutUser} from '../api/AuthAPI';
 import {fetchUserSubscription} from '../api/SubscriptionApi';
+import { RootStackParamList } from '../types/types';
 
 const ProfileScreen = () => {
   const [profile, setProfile] = useState({
@@ -23,7 +24,8 @@ const ProfileScreen = () => {
   // const [expiryDate, setExpiryDate] = useState<string>(' ');
   const [loading, setLoading] = useState(false);
 
-  const navigation = useNavigation();
+ 
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,12 +40,11 @@ const ProfileScreen = () => {
         });
 
         const subData = await fetchUserSubscription();
-        console.log('subData', subData);
+        // console.log('subData', subData);
 
         setSubscriptionPlan(subData.plan_type || 'No subscription');
         // setExpiryDate(subData.expires_at || 'No expiry date');
-        // console.log('Subscription Plan:', subData.plan_type);
-        // console.log('Expiry Date:', subData.expires_at);
+
         
 
       } catch (error) {
