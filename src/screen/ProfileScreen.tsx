@@ -11,7 +11,7 @@ import {Toast} from 'toastify-react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {getUser, logoutUser} from '../api/AuthAPI';
 import {fetchUserSubscription} from '../api/SubscriptionApi';
-import { RootStackParamList } from '../types/types';
+import {RootStackParamList} from '../types/types';
 
 const ProfileScreen = () => {
   const [profile, setProfile] = useState({
@@ -21,10 +21,9 @@ const ProfileScreen = () => {
     avatar: '',
   });
   const [subscriptionPlan, setSubscriptionPlan] = useState<string>('');
-  // const [expiryDate, setExpiryDate] = useState<string>(' ');
+
   const [loading, setLoading] = useState(false);
 
- 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
@@ -43,10 +42,6 @@ const ProfileScreen = () => {
         // console.log('subData', subData);
 
         setSubscriptionPlan(subData.plan_type || 'No subscription');
-        // setExpiryDate(subData.expires_at || 'No expiry date');
-
-        
-
       } catch (error) {
         Toast.error('Error fetching user data.');
       } finally {
@@ -130,16 +125,6 @@ const ProfileScreen = () => {
           editable={false}
         />
       </View>
-      {/* <View style={styles.inputContainer}>
-        <Text style={styles.label}>Subscription Expiry</Text>
-        <TextInput
-          style={styles.input}
-          value={expiryDate}
-          placeholder="Expiry date"
-          placeholderTextColor="#999"
-          editable={false}
-        />
-      </View> */}
 
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Logout</Text>
@@ -182,9 +167,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 8,
+    // borderWidth: 1,
+    // borderColor: '#fff',
+    // borderRadius: 8,
     padding: 10,
     fontSize: 16,
     color: '#fff',

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { addWatchList,deleteWatchList,getWatchList } from '../api/WatchList';
+import { Toast } from 'toastify-react-native';
 interface Movie {
   id: string;
   title: string;
@@ -22,13 +23,43 @@ const WatchlistContext = createContext<WatchlistContextProps | undefined>(undefi
 
 export const WatchlistProvider = ({ children }: { children: ReactNode }) => {
   const [watchlist, setWatchlist] = useState<Movie[]>([]);
-
-  const addToWatchlist = (movie: Movie) => {
-    setWatchlist((prev) => [...prev, movie]);
+  const [reload, setReload] = useState(false);
+  const addToWatchlist = async(movie: Movie) => {
+    try {
+      const response = await addWatchList(movie.id);
+      if (response) {
+        setReload(!reload);
+        Toast.success('Movie added to watchlist');
+      }
+    } catch (error) {
+      console.error('Error adding to watchlist:', error);
+    }
   };
 
-  const removeFromWatchlist = (id: string) => {
-    setWatchlist((prev) => prev.filter((m) => m.id !== id));
+  const fetchWatchlist = async () => {
+    try {      
+      const response = await getWatchList();
+      setWatchlist(response.data);
+      console.log('Fetched watchlist:', response.data);
+      
+      
+    } catch (error) {
+      console.error('Error fetching watchlist:', error);
+    }
+  };
+
+  useEffect(()=>{
+    fetchWatchlist();
+  },[reload])
+
+  const removeFromWatchlist = async(id: string) => {
+    try {
+      await deleteWatchList(id);
+      setReload(!reload);
+      Toast.success('Movie removed from watchlist');
+    } catch (error) {
+      console.error('Error removing from watchlist:', error);
+    }
   };
 
   const isInWatchlist = (id: string) => {
