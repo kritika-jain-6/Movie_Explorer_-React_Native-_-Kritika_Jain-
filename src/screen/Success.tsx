@@ -17,6 +17,7 @@ const Success = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
+          navigation.navigate('Subscription');
           navigation.navigate('Home');
         }}>
         <Text style={styles.buttonText}>Continue</Text>

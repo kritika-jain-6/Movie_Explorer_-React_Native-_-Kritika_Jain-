@@ -75,7 +75,7 @@ describe('Subscription', () => {
         createSubscription.mockResolvedValueOnce({});
         const { getByText } = render(<Subscription />);
         fireEvent.press(getByText('1 Day Premium'));
-        // fireEvent.press(getByText('Subscribe'));
+      
          waitFor(() => {
             expect(Toast.error).toHaveBeenCalledWith('No checkout URL returned from server');
         });

@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 export default function SearchNavigation() {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator >
       <Stack.Screen
         name="Home"
         component={Home}

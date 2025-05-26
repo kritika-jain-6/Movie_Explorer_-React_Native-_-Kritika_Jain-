@@ -78,7 +78,7 @@ const SearchScreen :React.FC<Props>=({navigation}) => {
     setSearchText('');
   };
 
-const handleGenreSelect = async (genre) => {
+const handleGenreSelect = async (genre:any) => {
   const genreToSearch = genre === selectedGenre ? null : genre;
 
   setSelectedGenre(genreToSearch);
@@ -111,7 +111,7 @@ const handleGenreSelect = async (genre) => {
 
   const navigateToDetails = (movie: any) => {
     if (movie) {
-      navigation.navigate('SearchResults', {movie});
+      navigation.navigate('MovieDetailScreen', {movie});
     }
   };
 
@@ -145,7 +145,7 @@ const handleGenreSelect = async (genre) => {
 
   return (
     <View style={styles.container} >
-      <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16,marginTop:20}}>
+      <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 16}}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}>

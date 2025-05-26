@@ -1,78 +1,89 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react-native';
 import Home from '../src/screen/HomeScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { updateDeviceToken } from '../src/api/NotificationApi';
 import { Toast } from 'toastify-react-native';
+import { getUser } from '../src/api/AuthAPI';
 
-// Mocks
-jest.mock('@react-native-async-storage/async-storage', () => ({
-  getItem: jest.fn(),
-}));
-jest.mock('../src/api/NotificationApi', () => ({
-  updateDeviceToken: jest.fn(),
-}));
 jest.mock('toastify-react-native', () => ({
   Toast: { error: jest.fn() },
 }));
+jest.mock('../src/api/AuthAPI', () => ({
+  getUser: jest.fn(),
+}));
 
-describe('HomeScreen useEffect Device Token Logic', () => {
+jest.mock('../src/component/MovieCarousel', () => () => <></>);
+jest.mock('../src/component/Explore', () => () => <></>);
+jest.mock('../src/component/Card', () => () => <></>);
+jest.mock('../src/component/MovieCard', () => () => <></>);
+jest.mock('../src/component/BornCard', () => () => <></>);
+jest.mock('../src/component/Footer', () => () => <></>);
+
+// const fetchUser = async () => {
+//   try {
+//     await getUser();
+//   } catch (error) {
+//     Toast.error('Error fetching user data:');
+//   }
+// };
+
+describe('HomeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('calls updateDeviceToken if both authToken and fcmToken exist', async () => {
-    AsyncStorage.getItem.mockImplementation((key) => {
-      if (key === 'authToken') return Promise.resolve('my-auth-token');
-      if (key === 'fcmToken') return Promise.resolve('my-fcm-token');
-      return Promise.resolve(null);
-    });
-    updateDeviceToken.mockResolvedValue({ success: true });
+  it('renders all main sections and headers', () => {
+    const { getByTestId, getByText } = render(<Home />);
+    expect(getByTestId('HomeScreen')).toBeTruthy();
+    expect(getByTestId('ExploreHeader')).toBeTruthy();
+    expect(getByTestId('WhatToDoHeader')).toBeTruthy();
+    expect(getByTestId('TopTenHeader')).toBeTruthy();
+    expect(getByTestId('BornTodayHeader')).toBeTruthy();
 
+    expect(getByText("Explore What's Streaming")).toBeTruthy();
+    expect(getByText('What to do')).toBeTruthy();
+    expect(getByText('Top Ten')).toBeTruthy();
+    expect(getByText('Born Today')).toBeTruthy();
+  });
+
+  it('calls getUser on mount (success)', async () => {
+    getUser.mockResolvedValueOnce({});
     render(<Home />);
-     waitFor(() => {
-      expect(updateDeviceToken).toHaveBeenCalledWith('my-fcm-token');
+    waitFor(() => {
+      expect(getUser).toHaveBeenCalled();
     });
   });
 
-  it('does not call updateDeviceToken if authToken is missing', async () => {
-    AsyncStorage.getItem.mockImplementation((key) => {
-      if (key === 'authToken') return Promise.resolve(null);
-      if (key === 'fcmToken') return Promise.resolve('my-fcm-token');
-      return Promise.resolve(null);
-    });
-
+   it('calls getUser on mount (success path)', async () => {
+    getUser.mockResolvedValueOnce({});
     render(<Home />);
-    await waitFor(() => {
-      expect(updateDeviceToken).not.toHaveBeenCalled();
+    waitFor(() => {
+      expect(getUser).toHaveBeenCalled();
     });
+    expect(Toast.error).not.toHaveBeenCalled();
   });
 
-  it('does not call updateDeviceToken if fcmToken is missing', async () => {
-    AsyncStorage.getItem.mockImplementation((key) => {
-      if (key === 'authToken') return Promise.resolve('my-auth-token');
-      if (key === 'fcmToken') return Promise.resolve(null);
-      return Promise.resolve(null);
-    });
 
+  it('shows error toast if getUser fails (error path)', async () => {
+    getUser.mockRejectedValueOnce(new Error('error'));
     render(<Home />);
-    await waitFor(() => {
-      expect(updateDeviceToken).not.toHaveBeenCalled();
-    });
-  });
-
-  it('shows toast error if updateDeviceToken throws', async () => {
-    AsyncStorage.getItem.mockImplementation((key) => {
-      if (key === 'authToken') return Promise.resolve('token');
-      if (key === 'fcmToken') return Promise.resolve('fcm');
-      return Promise.resolve(null);
-    });
-
-    updateDeviceToken.mockRejectedValue(new Error('API error'));
-
-    render(<Home />);
-     waitFor(() => {
+    waitFor(() => {
+      expect(getUser).toHaveBeenCalled();
       expect(Toast.error).toHaveBeenCalledWith('Error fetching user data:');
     });
   });
+  // it('calls getUser and handles success', async () => {
+  //   getUser.mockResolvedValueOnce({});
+  //   await fetchUser();
+  //   expect(getUser).toHaveBeenCalled();
+  //   expect(Toast.error).not.toHaveBeenCalled();
+  // });
+
+  // it('calls getUser and handles error', async () => {
+  //   getUser.mockRejectedValueOnce(new Error('fail'));
+  //   await fetchUser();
+  //   expect(getUser).toHaveBeenCalled();
+  //    waitFor(() => {
+  //     expect(Toast.error).toHaveBeenCalledWith('Error fetching user data:');
+  //   });
+  // });
 });

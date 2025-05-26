@@ -106,8 +106,7 @@ class Login extends Component<Props, State> {
         Toast.error('Login Error');
       }
     } catch (error: any) {
-      const msg =
-        error.response?.data?.message || error.message || 'Login failed';
+      const msg =error.response?.data?.message || error.message || 'Login failed';
       this.setState({errorMessage: msg});
       Toast.error('Login Error');
       console.log(error.response);

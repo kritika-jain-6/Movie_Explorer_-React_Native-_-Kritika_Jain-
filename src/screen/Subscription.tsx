@@ -34,7 +34,10 @@ const Subscription = () => {
     const fetchSubscription = async () => {
       try {
         const subscriptionData = await fetchUserSubscription();
+        // console.log('subscriptionData', subscriptionData);
+        
         if (subscriptionData.plan_type === 'premium') {
+          
           setHasActiveSubscription(true);
         } else {
           setHasActiveSubscription(false);
